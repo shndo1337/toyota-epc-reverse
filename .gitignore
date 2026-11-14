@@ -1,0 +1,12 @@
+*.iso
+data/
+tools/
+.venv/
+.uv-cache/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.egg-info/
+*.sqlite*
+.env
