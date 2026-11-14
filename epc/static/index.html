@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Toyota EPC: локальный каталог</title>
+  <meta name="description" content="Поиск оригинальных деталей Toyota по данным локального каталога EPC.">
+  <link rel="stylesheet" href="/static/css/tokens.css">
+  <link rel="stylesheet" href="/static/css/fonts.css">
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link rel="stylesheet" href="/static/css/layout.css">
+  <link rel="stylesheet" href="/static/css/components.css">
+  <link rel="stylesheet" href="/static/css/dialog.css">
+  <link rel="stylesheet" href="/static/css/responsive.css">
+  <script type="module" src="/static/js/main.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-in">
+      <a class="brand" href="/" aria-label="Toyota EPC, на главную">
+        <span class="brand-mark" aria-hidden="true">T</span>
+        <span class="brand-name">Toyota</span>
+        <span class="brand-light">EPC</span>
+      </a>
+      <nav class="top-links" aria-label="Служебные ссылки">
+        <span class="edition">4 рынка, издание 2025.01</span>
+        <a href="/docs" target="_blank" rel="noopener">REST API</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="intro">
+      <h1>Детали для вашего автомобиля.</h1>
+      <p class="lead">Полный локальный каталог: найдите Toyota или Lexus по VIN, номеру кузова или выберите модель из каталога.</p>
+    </section>
+
+    <div class="workspace">
+      <aside class="sidebar">
+        <details class="sidebar-disclosure" open>
+          <summary><span>Автомобиль и разделы</span><span id="sidebar-count" class="num">…</span></summary>
+          <div class="sidebar-body">
+            <section class="rail-block vehicle-panel" aria-labelledby="vehicle-title">
+              <div class="vehicle-heading">
+                <h2 id="vehicle-title">Подбор по автомобилю</h2>
+                <span class="vehicle-kind">VIN / frame</span>
+              </div>
+              <form id="vehicle-form">
+                <label class="sr-only" for="vehicle-input">VIN или номер кузова</label>
+                <input id="vehicle-input" type="text" maxlength="30" placeholder="VIN из 17 символов или ZVW30-5753000" autocomplete="off" spellcheck="false">
+                <button type="submit" class="search-button" id="vehicle-submit">Определить автомобиль</button>
+              </form>
+              <div class="vehicle-hint">VIN для экспортных автомобилей, номер кузова для японского рынка</div>
+              <div id="vehicle-result" aria-live="polite"></div>
+            </section>
+
+            <section class="rail-block" aria-labelledby="catalogs-title">
+              <h2 id="catalogs-title">Каталог модели</h2>
+              <label class="filter-label" for="region">Рынок</label>
+              <select id="region" class="sidebar-select">
+                <option value="">Все рынки</option>
+                <option value="EU">EU, Европа</option>
+                <option value="JP">JP, Япония</option>
+                <option value="US">US, США</option>
+                <option value="GR">GR, General</option>
+              </select>
+              <label class="filter-label" for="catalog-search">Модель или кузов</label>
+              <input id="catalog-search" class="sidebar-select" type="search" placeholder="Corolla, RAV4, ZVW30…" autocomplete="off">
+              <button id="all-catalogs" class="catalog-button active" type="button">
+                <span><strong>Все автомобили</strong><small>Все каталоги выбранного рынка</small></span>
+              </button>
+              <div id="catalog-list"></div>
+            </section>
+
+            <section id="figures-block" class="rail-block" aria-labelledby="figures-title" hidden>
+              <h2 id="figures-title">Разделы каталога</h2>
+              <label class="sr-only" for="figure-search">Найти раздел</label>
+              <input id="figure-search" class="sidebar-select" type="search" placeholder="Тормоза, 4705…" autocomplete="off">
+              <ul id="figure-list" class="figure-list"></ul>
+            </section>
+
+            <p class="scope-note">Все каталоги из <abbr>ISO</abbr> доступны для поиска. Подбор учитывает месяц, характеристики комплектации и диапазоны кузовов; дополнительные условия <abbr>EPC</abbr> видны в карточке.</p>
+            <a class="sidebar-link" href="/docs" target="_blank" rel="noopener">Документация API</a>
+          </div>
+        </details>
+      </aside>
+
+      <section class="results-panel" aria-labelledby="results-title">
+        <div class="panel-heading">
+          <h2 id="results-title">Все детали</h2>
+          <div class="panel-tools">
+            <label class="sr-only" for="search-mode">Тип каталога</label>
+            <select id="search-mode">
+              <option value="parts">Запчасти</option>
+              <option value="accessories">Аксессуары JPIO</option>
+            </select>
+            <span id="result-total" class="result-count num"></span>
+          </div>
+        </div>
+
+        <form id="search-form" class="search-form">
+          <label class="sr-only" for="search">Номер или английское название детали</label>
+          <input id="search" name="q" type="search" maxlength="100" placeholder="Номер или название, например 04465 или brake pad" autocomplete="off" spellcheck="false">
+          <button class="search-button" type="submit">Найти</button>
+        </form>
+
+        <div class="search-extras">
+          <div class="examples">
+            <span>Например:</span>
+            <button type="button" data-example="04465">04465</button>
+            <button type="button" data-example="brake pad">brake pad</button>
+            <button type="button" data-example="oil filter">oil filter</button>
+          </div>
+        </div>
+
+        <div id="context" class="context" aria-label="Выбранные условия"></div>
+
+        <details class="filters">
+          <summary>Дополнительные фильтры</summary>
+          <div class="advanced-filters">
+            <label>Модель / комплектация<input id="model-filter" type="text" placeholder="ZVW30, KGB10L…" maxlength="30" autocomplete="off"></label>
+            <label>Двигатель<input id="engine-filter" type="text" placeholder="2ZRFXE…" maxlength="20" autocomplete="off"></label>
+            <label>Месяц выпуска<input id="month-filter" type="month" min="1900-01" max="2099-12"></label>
+            <button id="clear-filters" type="button">Сбросить</button>
+          </div>
+        </details>
+
+        <div id="figure-images" class="figure-images" hidden></div>
+        <p id="status" role="status" class="status-text" aria-live="polite"></p>
+
+        <div class="table-wrap" id="results-region">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Номер детали</th>
+                <th scope="col">Название в EPC</th>
+                <th scope="col">Каталоги</th>
+                <th scope="col"><span class="sr-only">Открыть</span></th>
+              </tr>
+            </thead>
+            <tbody id="results">
+              <tr class="skeleton" aria-hidden="true"><td><i></i></td><td><i></i></td><td><i></i></td><td></td></tr>
+              <tr class="skeleton" aria-hidden="true"><td><i></i></td><td><i></i></td><td><i></i></td><td></td></tr>
+              <tr class="skeleton" aria-hidden="true"><td><i></i></td><td><i></i></td><td><i></i></td><td></td></tr>
+              <tr class="skeleton" aria-hidden="true"><td><i></i></td><td><i></i></td><td><i></i></td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div id="empty-state" class="empty-state" hidden>
+          <h3>Детали не найдены</h3>
+          <p>Попробуйте начало номера или английское название.<br>Также проверьте выбранные фильтры автомобиля.</p>
+          <button type="button" id="reset-search">Сбросить поиск</button>
+        </div>
+
+        <div class="pagination">
+          <span id="page-description" class="num">Загружаем детали…</span>
+          <div>
+            <button id="previous" type="button" disabled aria-label="Предыдущая страница">Назад</button>
+            <button id="next" type="button" disabled aria-label="Следующая страница">Вперёд</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <footer class="colophon">
+      <section class="metrics" aria-label="Объём данных">
+        <div><strong id="parts-count" class="num">…</strong><span>номеров деталей</span></div>
+        <div><strong id="applications-count" class="num">…</strong><span>строк запчастей</span></div>
+        <div><strong id="catalogs-count" class="num">…</strong><span>каталогов</span></div>
+        <div><strong id="vehicles-count" class="num">…</strong><span>автомобилей в EPC</span></div>
+        <div class="data-status"><span id="database-status">Проверяем базу…</span></div>
+      </section>
+      <div class="edition-block">
+        <span class="edition-label">Данные каталога</span>
+        <strong class="edition-year">2025<span>.01</span></strong>
+        <small>Европа, Япония, США, General</small>
+      </div>
+      <div class="colophon-line">
+        <span>Toyota EPC, рынки EU / GR / JP / US</span>
+        <span>Источник: Toyota_EPC_2025_01.iso<a href="/api/v1/sources" target="_blank" rel="noopener">Файлы и SHA-256</a></span>
+      </div>
+    </footer>
+  </main>
+
+  <dialog id="part-dialog" aria-labelledby="part-title">
+    <div class="dialog-top">
+      <span class="dialog-kind">Карточка детали</span>
+      <button id="close-dialog" type="button" aria-label="Закрыть карточку">Закрыть</button>
+    </div>
+    <div id="part-body"></div>
+  </dialog>
+</body>
+</html>

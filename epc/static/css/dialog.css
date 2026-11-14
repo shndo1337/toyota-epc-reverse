@@ -1,0 +1,202 @@
+dialog {
+  width: min(56rem, calc(100% - 2 * var(--space-md)));
+  max-height: min(90dvh, 60rem);
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--radius-card);
+  background: var(--color-paper);
+  box-shadow: var(--shadow-card);
+  color: var(--color-ink-2);
+}
+
+dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+dialog::backdrop {
+  background: color-mix(in oklab, var(--color-ink) 40%, transparent);
+}
+
+.dialog-top {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-sm) var(--space-lg);
+  border-bottom: var(--rule-hair) solid var(--color-rule);
+}
+
+.dialog-kind {
+  color: var(--color-muted);
+  font-size: var(--text-sm);
+}
+
+#part-body {
+  display: grid;
+  align-content: start;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  overflow-y: auto;
+}
+
+#part-body h2 {
+  color: var(--color-ink);
+  font-size: var(--text-3xl);
+}
+
+.part-names {
+  color: var(--color-ink);
+  font-size: var(--text-lg);
+  line-height: 1.35;
+}
+
+.part-meta {
+  color: var(--color-muted);
+  font-size: var(--text-sm);
+}
+
+.part-catalogs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.part-catalogs span {
+  padding: var(--space-3xs) var(--space-sm);
+  border-radius: var(--radius-control);
+  background: var(--color-paper-3);
+  color: var(--color-ink-2);
+  font-size: var(--text-xs);
+  font-weight: 600;
+}
+
+.related-numbers {
+  padding-top: var(--space-sm);
+  border-top: var(--rule-hair) solid var(--color-rule);
+  font-size: var(--text-sm);
+}
+
+.related-numbers summary,
+.source-details summary {
+  color: var(--color-ink);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.related-numbers p {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-md);
+  margin-top: var(--space-xs);
+}
+
+.related-numbers small {
+  color: var(--color-muted);
+}
+
+.part-notice {
+  padding: var(--space-sm) var(--space-md);
+  border: var(--rule-hair) solid var(--color-rule);
+  border-radius: var(--radius-control);
+  background: var(--color-paper-2);
+  font-size: var(--text-sm);
+}
+
+.applications-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding-bottom: var(--space-xs);
+  border-bottom: var(--rule-hair) solid var(--color-ink);
+}
+
+.applications-heading h3 {
+  color: var(--color-ink);
+  font-size: var(--text-xl);
+}
+
+.applications-heading label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  color: var(--color-muted);
+  font-size: var(--text-sm);
+}
+
+#application-list {
+  display: grid;
+}
+
+.application-card {
+  display: grid;
+  gap: var(--space-xs);
+  padding-block: var(--space-md);
+  border-top: var(--rule-hair) solid var(--color-rule);
+}
+
+.application-card:first-child {
+  border-top: 0;
+}
+
+.application-top {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-2xs) var(--space-md);
+  color: var(--color-ink);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.application-top span:last-child {
+  color: var(--color-muted);
+  font-weight: 400;
+}
+
+.application-info {
+  color: var(--color-muted);
+  font-size: var(--text-sm);
+}
+
+.application-text {
+  max-width: 80ch;
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+
+.application-text small {
+  display: block;
+  margin-bottom: var(--space-3xs);
+  color: var(--color-muted);
+  font-size: var(--text-xs);
+}
+
+.source-details {
+  font-size: var(--text-sm);
+}
+
+.source-details pre {
+  margin: var(--space-xs) 0 0;
+  padding: var(--space-sm);
+  overflow-x: auto;
+  border-radius: var(--radius-control);
+  background: var(--color-ink);
+  color: var(--color-paper);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.accessory-image {
+  width: auto;
+  max-height: 22rem;
+  border-radius: var(--radius-card);
+  outline: var(--rule-hair) solid var(--color-rule);
+  outline-offset: -1px;
+}
